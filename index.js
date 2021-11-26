@@ -1,8 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const path = require('path');
+
+const PORT = process.env.PORT || 4001;
 
 const app = express();
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(cors());
 
@@ -55,11 +59,11 @@ app.put('/purchases/:id', (req, res) => {
 
 app.delete('/purchases/:id', (req, res) => {
   const id = req.params.id;
-  delete(purchases[id]);
+  delete (purchases[id]);
 
   res.status(200);
 });
 
-app.listen(4001, () => {
-  console.log('Listening to port 4001');
+app.listen(PORT, () => {
+  console.log(`Listening to port ${PORT}`);
 });
