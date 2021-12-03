@@ -24,9 +24,9 @@ const purchases = {
     id: '569ce2c1-41fe-468a-8135-f4c285ae9a32',
     name: 'eReader',
     price: 200,
-    usageCost: 0.25,
-    currentUses: 301,
-    expectedUses: 300,
+    usageCost: 0.5,
+    currentUses: 401,
+    expectedUses: 400,
     purchasedDate: '2020-11-16',
   },
 };
