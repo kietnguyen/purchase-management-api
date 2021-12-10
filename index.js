@@ -2,6 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
+const { v4: uuid } = require('uuid');
+const faker = require('faker');
+const dayjs = require('dayjs');
 
 const PORT = process.env.PORT || 4001;
 
@@ -10,26 +13,21 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(cors());
 
-const purchases = {
-  'd4681f12-06e2-4730-9114-1e7605e50a90': {
-    id: 'd4681f12-06e2-4730-9114-1e7605e50a90',
-    name: 'Food Processor',
-    price: 100,
-    usageCost: 1,
-    currentUses: 5,
-    expectedUses: 100,
-    purchasedDate: '2021-11-12',
-  },
-  '569ce2c1-41fe-468a-8135-f4c285ae9a32': {
-    id: '569ce2c1-41fe-468a-8135-f4c285ae9a32',
-    name: 'eReader',
-    price: 200,
-    usageCost: 0.5,
-    currentUses: 401,
-    expectedUses: 400,
-    purchasedDate: '2020-11-16',
-  },
-};
+faker.seed(12345);
+
+const SAMPLE_SIZE = 250;
+const purchases = {};
+[...Array(SAMPLE_SIZE)].forEach(() => {
+  const id = uuid();
+  const name = faker.commerce.productName();
+  const price = parseFloat(faker.commerce.price());
+  const purchasedDate = dayjs(faker.date.past()).format('YYYY-MM-DD');
+  const usageCost = (Math.random() * price) / 4;
+  const expectedUses = Math.ceil(price / usageCost);
+  const currentUses = Math.ceil(Math.random() * expectedUses);
+
+  purchases[id] = { id, name, price, purchasedDate, usageCost, expectedUses, currentUses };
+});
 
 app.get('/purchases', (req, res) => {
   res.send(Object.values(purchases));
@@ -59,7 +57,7 @@ app.put('/purchases/:id', (req, res) => {
 
 app.delete('/purchases/:id', (req, res) => {
   const id = req.params.id;
-  delete (purchases[id]);
+  delete purchases[id];
 
   res.status(200);
 });
